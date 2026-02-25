@@ -1,5 +1,8 @@
 ## Live Demo (Coming Soon)
 
+<img width="1710" height="1112" alt="Screenshot 2026-02-18 at 11 37 23 PM" src="https://github.com/user-attachments/assets/9ad2fd56-e880-4b54-a45f-b95e9b968dd6" />
+
+
 # F1 Strategy Analytics System
 
 A professional race strategy simulation engine inspired by real Formula 1 performance engineering.
