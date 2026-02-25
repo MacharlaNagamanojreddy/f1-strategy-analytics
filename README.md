@@ -1,6 +1,6 @@
 ## Live Demo (Coming Soon)
 
-<img width="3420" height="2224" alt="image" src="https://github.com/user-attachments/assets/7efd5e97-d4e1-47e2-a526-f8b3050717d2" />
+<img width="1162" height="857" alt="Screenshot 2026-02-25 at 9 00 29 PM" src="https://github.com/user-attachments/assets/a4009fb9-2259-4d5e-b7a1-bb20ae05f13d" />
 
 
 
