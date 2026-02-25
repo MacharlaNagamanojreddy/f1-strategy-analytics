@@ -46,6 +46,7 @@ This system models Formula 1 race strategy using:
 
 ### Real Data Integration
 - Monaco 2023 race data
+- Silverstone 2023 race data
 - Hamilton lap extraction
 - Tire degradation curve fitting
 
@@ -58,4 +59,3 @@ This system models Formula 1 race strategy using:
 ## How to Run
 
 Install dependencies:
-

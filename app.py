@@ -36,13 +36,22 @@ if st.button("Run Simulation"):
 
     st.pyplot(fig)
     
-from src.real_data_model import load_hamilton_medium_degradation
+from src.real_data_model import (
+    load_hamilton_medium_degradation,
+    load_hamilton_medium_degradation_silverstone,
+)
 
 st.markdown("---")
-st.subheader("Real Data Degradation Model (Hamilton - Monaco 2023)")
+st.subheader("Real Data Degradation Model (Hamilton - 2023)")
+
+track = st.selectbox("Track", ["Monaco", "Silverstone"], key="track_select")
 
 if st.button("Load Real Data Model"):
-    base, deg = load_hamilton_medium_degradation()
+    if track == "Monaco":
+        base, deg = load_hamilton_medium_degradation()
+    else:
+        base, deg = load_hamilton_medium_degradation_silverstone()
 
+    st.write(f"Track: {track}")
     st.write(f"Estimated Base Lap Time: {round(base,2)} sec")
     st.write(f"Estimated Degradation per Lap: {round(deg,5)} sec")
