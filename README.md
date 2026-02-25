@@ -1,6 +1,7 @@
 ## Live Demo (Coming Soon)
 
-<img width="1710" height="1112" alt="Screenshot 2026-02-18 at 11 37 23 PM" src="https://github.com/user-attachments/assets/9ad2fd56-e880-4b54-a45f-b95e9b968dd6" />
+<img width="3420" height="2224" alt="image" src="https://github.com/user-attachments/assets/7efd5e97-d4e1-47e2-a526-f8b3050717d2" />
+
 
 
 # F1 Strategy Analytics System
