@@ -1,186 +1,145 @@
-🏎️ F1 Performance & Strategy Analysis Platform
+# Smart Exam Scheduler
 
-A full-stack Formula 1 analytics platform that processes live telemetry, race-weekend data, and real driver laps to generate pace insights, tyre degradation curves, and race strategy predictions.
-Powered by a modern React dashboard, a Node.js backend, and a Python analytics engine built on ML models and simulation algorithms.
-<img width="2048" height="1088" alt="result" src="https://github.com/user-attachments/assets/7bd97b7a-39f7-4648-898c-501185b8a051" />
+A full-stack university exam scheduling platform that generates conflict-free exam timetables using intelligent algorithms (CSP + Hybrid GA).
 
-🚀 Features
-📡 Telemetry Ingestion
+Built with:
+- A modern React admin interface
+- A scalable Node.js backend
+- A Python scheduling engine
 
-Live timing & delta feed support
+## Project Snapshot
 
-Lap–by–lap data processing
+Add your project screenshot here:
 
-Driver pace, throttle, brake, speed & GPS
+```md
+![Smart Exam Scheduler Dashboard](./docs/images/dashboard.png)
+```
 
-🧠 Analytics Engine
+## Features
 
-Pace prediction models
+### Admin Portal
+- JWT-based authentication
+- Manage students
+- Manage subjects
+- Manage teachers
+- Manage halls
 
-Real data tyre degradation modelling
+### Smart Scheduling Engine
+- CSP mode:
+  - Fast baseline solver
+  - Ensures no student exam clashes
+  - Assigns halls based on capacity
+- Hybrid GA mode:
+  - Genetic Algorithm orders subjects
+  - CSP places them in the timetable
+  - Produces optimized, balanced schedules
 
-Monte Carlo–based strategy simulation
+### Dashboard
+- System statistics
+- Quick metrics
+- Recent exam schedule preview
+- CSV export for schedules
 
-Undercut/overcut feasibility scoring
+## Tech Stack
 
-Pit window optimisation
+### Frontend
+- React
+- React Router
+- Tailwind CSS
+- Axios
 
-🎛️ Interactive Dashboard
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
+- JWT authentication
 
-Stint comparison
+### Scheduler
+- Python
+- CSP solver
+- Hybrid GA optimization
 
-Tyre wear visualisation
+## Folder Structure
 
-Predicted lap times
+```text
+smart-exam-scheduler/
+|
+|-- backend/        # Node.js + Express API
+|   |-- src/
+|   |-- server.js
+|   `-- config.env.example
+|
+|-- frontend/       # React Admin UI
+|   |-- src/
+|   |-- App.jsx
+|   `-- .env.example
+|
+`-- scheduler/      # Python CSP/GA engine
+```
 
-Strategy recommendations
+## Local Development Setup
 
-Simulation outputs (CSV/PDF export)
+### 1. Backend Setup
 
-🧩 Real Data Tyre Degradation Module
-
-A specialised module that uses real race data (e.g., Hamilton — Monaco 2023) to learn tyre degradation curves and simulate race outcomes.
-
-Key Capabilities:
-
-Load historical driver lap times
-
-Clean & filter outliers, pit laps, warm-up laps
-
-Fit linear/polynomial tyre degradation models
-
-Generate base lap time + per-lap degradation
-
-Run Monte Carlo simulations
-
-Compute predicted stint time & optimal pit lap
-
-Inputs:
-
-First Stint Tyre
-
-Second Stint Tyre
-
-Pit Lap
-
-Monte Carlo Runs
-
-Outputs:
-
-Estimated base lap time
-
-Tyre degradation rate
-
-Race time distribution
-
-Strategy score
-
-🧠 Tech Stack
-Frontend
-
-React
-
-Tailwind CSS
-
-React Router
-
-Axios
-
-Recharts/D3
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB (Mongoose)
-
-JWT Authentication
-
-Analytics Engine
-
-Python
-
-Pandas, NumPy
-
-Scikit-Learn
-
-Custom strategy simulation algorithms
-
-Statistical degradation modelling
-
-🗂 Folder Structure
-f1-analysis-platform/
-│
-├── backend/                # Node.js + Express API
-│   ├── src/
-│   ├── server.js
-│   └── config.env.example
-│
-├── frontend/               # React Data Dashboard
-│   ├── src/
-│   ├── App.jsx
-│   └── .env.example
-│
-└── analytics/              # Python ML/Simulation Engine
-    ├── telemetry/
-    ├── degradation/
-    │   ├── model_fitter.py
-    │   ├── monte_carlo.py
-    │   ├── visualizer.py
-    │   └── hamilton_monaco_2023.csv
-    └── strategy/
-🔧 Local Development Setup
-1️⃣ Backend Setup
+```bash
 cp backend/config.env.example backend/config.env
 npm --prefix backend install
 npm --prefix backend run start
-2️⃣ Frontend Setup
+```
+
+### 2. Frontend Setup
+
+```bash
 cp frontend/.env.example frontend/.env
 npm --prefix frontend install
 npm --prefix frontend run start
-3️⃣ Analytics Engine Setup
-cd analytics
-pip install -r requirements.txt
-python main.py
-🌐 Running URLs
+```
 
-Frontend:
-http://localhost:3000
+### Running URLs
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
 
-Backend:
-http://localhost:5000
+## First Login
 
-Analytics Engine (Streamlit UI):
-http://localhost:8501
+1. Navigate to `http://localhost:3000/login`
+2. Create the initial admin account
+3. Use the same credentials for future logins
 
-🔍 How the Analysis Pipeline Works
-Algorithm Flow (Mermaid)
-<img width="4060" height="737" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/d81eb0fb-271f-41e7-a317-35926d35ddf6" />
+## How Scheduling Works
 
-🔬 Real Data Modelling Pipeline
-<img width="2790" height="235" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/f16071f9-5a24-4dea-8582-7dedf74fbaae" />
+### Inputs
+- Students
+- Subjects
+- Halls
+- Teacher list
 
-📦 Deployment
+### Outputs
+- Clean, conflict-free exam timetable
+- Optimized slot assignment
+- CSV export
 
-Production deployment steps are provided in:
+### Algorithm Pipeline
+1. Validate entities and capacity constraints.
+2. Build subject ordering (direct CSP mode or GA-assisted mode).
+3. Assign slots and halls with CSP constraints.
+4. Evaluate clashes, hall capacity, and timetable balance.
+5. Export the final schedule as CSV.
 
-docs/DEPLOYMENT.md
+## Deployment
 
-Supports:
+Docker and production deployment guidance:
 
-Docker & Docker Compose
+`docs/DEPLOYMENT.md`
 
-NGINX reverse proxy
+Supported options:
+- Docker Compose
+- Cloud deployment
+- Nginx reverse proxy
+- Railway / Render / VPS
 
-Railway / Render / AWS / VPS
+## Author
 
-Environment variable configuration
+Macharla Naga Manoj Reddy  
+Smart Exam Scheduler - Prototype Release
 
-🧑‍💻 Author
-
-Macharla Naga Manoj Reddy
-F1 Performance & Strategy Analysis Platform — Prototype Release
-
-If this project fuels your curiosity, ⭐ the repo!
+If this project helps you, star the repository.
