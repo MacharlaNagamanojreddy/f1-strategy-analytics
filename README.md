@@ -17,7 +17,7 @@ It combines:
 - View average race time, risk (standard deviation), and best simulated time
 - Inspect full race-time distribution with histogram
 
-### 🧠 Smart Strategy Engine
+### 🧠 Strategy Engine
 - Two-stint race model across 60 laps
 - Compound-specific base pace and degradation rates
 - Pit stop loss modeling
@@ -34,21 +34,21 @@ It combines:
 - Linear degradation fitting on Medium compound laps
 - Built-in tracks in UI:
   - Monaco GP 2023 (HAM)
-  - Silverstone/British GP 2023 (HAM)
+  - Silverstone / British GP 2023 (HAM)
 
 ## 🧠 Tech Stack
 
-### App Layer
+### Application
 - Python
 - Streamlit
 
-### Analytics Layer
+### Analytics
 - NumPy
 - Pandas
 - Matplotlib
 - Scikit-Learn
 
-### Data Layer
+### Data
 - FastF1
 
 ## 🗂 Folder Structure
@@ -70,61 +70,193 @@ f1-strategy-analytics/
 └── reports/                 # Optional exported outputs
 ```
 
-## 🔧 Local Development Setup
+## 🔧 Installation Guide (Everything)
 
-### 1. Environment Setup
+### 1. Prerequisites
+- Python 3.10+ (recommended: 3.11)
+- `pip`
+- `git`
+
+Check versions:
+
+```bash
+python --version
+pip --version
+git --version
+```
+
+### 2. Clone the repository
+
+```bash
+git clone https://github.com/MacharlaNagamanojreddy/f1-strategy-analytics.git
+cd f1-strategy-analytics
+```
+
+### 3. Create and activate a virtual environment
+
+#### macOS / Linux
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+```
+
+#### Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+#### Windows (CMD)
+
+```cmd
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+### 4. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Run the Dashboard
+### 5. Run the app
 
 ```bash
 streamlit run app.py
 ```
 
-### Running URL
-- Dashboard: `http://localhost:8501`
+Open:
+- `http://localhost:8501`
 
-## 📅 How Strategy Simulation Works
+## ▶️ Usage
 
-### Inputs
-- First stint tyre
-- Second stint tyre
-- Pit lap
-- Monte Carlo run count
+### Strategy Simulation
+1. Select `First Stint Tire` and `Second Stint Tire`.
+2. Set `Pit Lap` and `Monte Carlo Runs`.
+3. Click `Run Simulation`.
+4. Analyze average time, risk, best time, and distribution chart.
 
-### Outputs
-- Average total race time
-- Risk (standard deviation)
-- Best simulated race time
-- Distribution plot
-- Real-data base lap time and degradation slope
-
-### Algorithm Pipeline
-1. Simulate each lap with compound pace + degradation.
-2. Apply pit-loss at selected pit lap.
-3. Add stochastic traffic and noise effects.
-4. Repeat across Monte Carlo runs.
-5. Aggregate and visualize race-time distribution.
-
-## 🔬 Real Data Mode
-
-1. Choose `Monaco` or `Silverstone` in the dashboard.
+### Real Data Mode
+1. Select `Track` as `Monaco` or `Silverstone`.
 2. Click `Load Real Data Model`.
-3. The app fetches FastF1 race data, filters HAM Medium laps, and fits a linear model.
-4. The app returns:
+3. The model fetches race data, fits degradation, and returns:
    - Estimated base lap time (intercept)
-   - Degradation per lap (slope)
+   - Estimated degradation per lap (slope)
 
-## 📦 Notes
+## 📈 Algorithm Diagrams
 
-- First FastF1 fetch can be slower due to API download.
-- Subsequent runs are faster via cache reuse.
-- Internet connection is required for uncached sessions.
+### 1) End-to-End System Flow
+
+```mermaid
+flowchart LR
+    A["User Inputs (UI)"] --> B["Streamlit App (app.py)"]
+    B --> C["Strategy Engine (strategy_engine.py)"]
+    C --> D["Monte Carlo Driver (monte_carlo.py)"]
+    D --> E["Distribution + Metrics"]
+    E --> F["Dashboard Charts + KPIs"]
+
+    B --> G["Real Data Model (real_data_model.py)"]
+    G --> H["FastF1 API / Cache"]
+    H --> I["Lap Filtering + Linear Fit"]
+    I --> J["Base Time + Degradation"]
+    J --> F
+```
+
+### 2) Lap-Time Strategy Simulation Logic
+
+```mermaid
+flowchart TD
+    A["Start Race Simulation"] --> B["For lap = 1..total_laps"]
+    B --> C{"lap < pit_lap?"}
+    C -- Yes --> D["Use first stint compound"]
+    C -- No --> E{"lap == pit_lap?"}
+    E -- Yes --> F["Apply pit loss + use first stint"]
+    E -- No --> G["Use second stint compound"]
+
+    D --> H["lap_time = base + deg * stint_lap"]
+    F --> H
+    G --> H
+
+    H --> I{"traffic event?"}
+    I -- Yes --> J["Add traffic penalty"]
+    I -- No --> K["No traffic penalty"]
+    J --> L["Add random lap noise"]
+    K --> L
+    L --> M["Accumulate total_time"]
+    M --> N{"More laps?"}
+    N -- Yes --> B
+    N -- No --> O["Return total race time"]
+```
+
+### 3) Monte Carlo Evaluation Flow
+
+```mermaid
+flowchart TD
+    A["Input strategy + simulation count"] --> B["Initialize empty results list"]
+    B --> C["Repeat N times"]
+    C --> D["Run single-race simulation"]
+    D --> E["Append race time"]
+    E --> F{"Completed N runs?"}
+    F -- No --> C
+    F -- Yes --> G["Compute mean(results)"]
+    G --> H["Compute std(results)"]
+    H --> I["Return mean, std, distribution"]
+```
+
+### 4) Real Data Degradation Modeling Flow
+
+```mermaid
+flowchart TD
+    A["Select season, race, driver"] --> B["Load FastF1 session"]
+    B --> C["Pick driver laps"]
+    C --> D["Filter MEDIUM compound laps"]
+    D --> E["Drop laps with missing LapTime"]
+    E --> F{"Any laps left?"}
+    F -- No --> G["Raise ValueError"]
+    F -- Yes --> H["Convert LapTime to seconds"]
+    H --> I["Create stint lap index"]
+    I --> J["Linear fit: polyfit(stint_lap, lap_time, 1)"]
+    J --> K["Extract slope (degradation)"]
+    J --> L["Extract intercept (base lap time)"]
+    K --> M["Return intercept, slope"]
+    L --> M
+```
+
+## 🧮 Core Equations
+
+- Per-lap model:
+  - `lap_time = base_compound_time + degradation_rate * stint_lap`
+- Total race time:
+  - `race_time = sum(all lap_time values) + pit_loss (at pit lap)`
+- Monte Carlo outputs:
+  - `mean = average(simulated_race_times)`
+  - `risk = std(simulated_race_times)`
+
+## 🛠 Troubleshooting
+
+### FastF1 first run is slow
+- This is expected for first-time data download.
+- Later runs use `fastf1_cache/` and are faster.
+
+### Port already in use
+Run Streamlit on a custom port:
+
+```bash
+streamlit run app.py --server.port 8502
+```
+
+### Dependency issues
+Rebuild virtual environment:
+
+```bash
+rm -rf .venv
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## 👨‍💻 Author
 
