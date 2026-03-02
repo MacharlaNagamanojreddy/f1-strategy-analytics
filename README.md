@@ -7,7 +7,8 @@ It combines:
 - Monte Carlo simulation for risk-aware race outcomes
 - Real race-data tyre degradation modeling using FastF1
 
-![F1 Strategy Analytics](https://github.com/user-attachments/assets/7efd5e97-d4e1-47e2-a526-f8b3050717d2)
+<img width="2048" height="1088" alt="result" src="https://github.com/user-attachments/assets/b412c883-35dd-42a6-ab7e-aec12d2d68a1" />
+
 
 ## 🚀 Features
 
