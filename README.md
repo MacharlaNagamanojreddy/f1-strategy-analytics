@@ -6,6 +6,7 @@ It combines:
 - Interactive strategy exploration in Streamlit
 - Monte Carlo simulation for risk-aware race outcomes
 - Real race-data tyre degradation modeling using FastF1
+- End-to-end next-lap pace prediction from recent car telemetry
 
 <img width="2048" height="1088" alt="result" src="https://github.com/user-attachments/assets/b412c883-35dd-42a6-ab7e-aec12d2d68a1" />
 
@@ -37,6 +38,15 @@ It combines:
   - Monaco GP 2023 (HAM)
   - Silverstone / British GP 2023 (HAM)
 
+### 🚘 Recent Race Telemetry Model
+- Finds the latest completed race weekends in the current season through FastF1
+- Collects clean consecutive laps from every available driver and team
+- Summarizes speed, throttle, braking, RPM, gear, track distance, and tyre age
+- Uses current lap pace to forecast the next lap
+- Trains a Random Forest model to predict the next lap time
+- Evaluates on an unseen race weekend when multiple races are available
+- Reports validation MAE and R² and compares a held-out lap prediction with its actual time
+
 ## 🧠 Tech Stack
 
 ### Application
@@ -62,12 +72,14 @@ f1-strategy-analytics/
 ├── src/
 │   ├── strategy_engine.py   # Lap-level strategy simulation
 │   ├── monte_carlo.py       # Monte Carlo execution logic
-│   └── real_data_model.py   # FastF1 degradation fitting
+│   ├── real_data_model.py   # FastF1 degradation fitting
+│   └── telemetry_model.py   # Recent race ingestion, training, and inference
 │
 ├── notebooks/
 │   └── exploration.ipynb    # Analysis and experimentation
 │
 ├── fastf1_cache/            # Cached FastF1 responses
+├── models/                  # Locally saved model (generated)
 └── reports/                 # Optional exported outputs
 ```
 
@@ -146,6 +158,14 @@ Open:
 3. The model fetches race data, fits degradation, and returns:
    - Estimated base lap time (intercept)
    - Estimated degradation per lap (slope)
+
+### Recent Car Telemetry Model
+1. Set how many completed race weekends to load (1–5).
+2. Click **Train / Refresh Telemetry Model**. The first uncached run can take several minutes.
+3. Review validation MAE and R². With multiple weekends, validation holds out a whole weekend to measure performance on a different event.
+4. Choose a held-out track, team, driver, and telemetry sample to compare predicted and actual next-lap times.
+
+The model predicts the next clean lap by the same driver on the same tyre compound using current lap time, car telemetry, track, team, driver, and tyre age. It skips pit-in/out laps, inaccurate laps, and lap-number discontinuities. Downloaded data and the saved model stay in local cache folders.
 
 ## 📈 Algorithm Diagrams
 
@@ -228,6 +248,25 @@ flowchart TD
 
 ## 🧮 Core Equations
 
+### 5) Recent Car Telemetry Training and Prediction
+
+```mermaid
+flowchart TD
+    A["Get current season schedule"] --> B["Select latest completed race weekends"]
+    B --> C["Load race laps and car telemetry with FastF1"]
+    C --> D["Filter inaccurate, pit, and non-consecutive laps"]
+    D --> E["Aggregate current-lap car channels and lap pace"]
+    E --> F["Pair current telemetry with next same-compound lap time"]
+    F --> G["Split by race weekend for validation"]
+    G --> H["Encode track, team, driver, and compound"]
+    H --> I["Train Random Forest regressor"]
+    I --> J["Measure MAE and R² on held-out laps"]
+    J --> K["Predict and compare a held-out next lap"]
+    I --> L["Save model under models/"]
+```
+
+## 🧮 Core Equations
+
 - Per-lap model:
   - `lap_time = base_compound_time + degradation_rate * stint_lap`
 - Total race time:
@@ -241,6 +280,8 @@ flowchart TD
 ### FastF1 first run is slow
 - This is expected for first-time data download.
 - Later runs use `fastf1_cache/` and are faster.
+- The telemetry model loads up to five recent completed race weekends when trained.
+- If only one completed event is available, validation uses a random lap split and may overstate performance on a new track.
 
 ### Port already in use
 Run Streamlit on a custom port:
