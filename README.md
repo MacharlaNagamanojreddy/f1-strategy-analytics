@@ -79,7 +79,8 @@ f1-strategy-analytics/
 │   └── exploration.ipynb    # Analysis and experimentation
 │
 ├── fastf1_cache/            # Cached FastF1 responses
-├── models/                  # Locally saved model (generated)
+├── models/
+│   └── latest_lap_time_model.joblib # Trained model bundle; refresh from the dashboard
 └── reports/                 # Optional exported outputs
 ```
 
@@ -165,7 +166,7 @@ Open:
 3. Review validation MAE and R². With multiple weekends, validation holds out a whole weekend to measure performance on a different event.
 4. Choose a held-out track, team, driver, and telemetry sample to compare predicted and actual next-lap times.
 
-The model predicts the next clean lap by the same driver on the same tyre compound using current lap time, car telemetry, track, team, driver, and tyre age. It skips pit-in/out laps, inaccurate laps, and lap-number discontinuities. Downloaded data and the saved model stay in local cache folders.
+The model predicts the next clean lap by the same driver on the same tyre compound using current lap time, car telemetry, track, team, driver, and tyre age. It skips pit-in/out laps, inaccurate laps, and lap-number discontinuities. The trained model bundle is included in `models/`; FastF1's downloaded telemetry cache stays local.
 
 ## 📈 Algorithm Diagrams
 
